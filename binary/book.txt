@@ -1,0 +1,5 @@
+Perceba que a lista de palavras-chave est ́a em ordem alfab ́etica. Adjacente a cada palavra
+est ́a uma lista com n ́umeros de linhas, um para cada vez que a palavra ocorre node texto. Uma
+estrutura de dados desse tipo  ́e conhecida como arquivo invertido. As listas do arquivo
+invertido sao conhecidas como listas invertidas. O arquivo invertido  ́e um mecanismo muito
+utilizado em arquivos constitu ́ıdos de texto, como as maquinas de busca na Web.

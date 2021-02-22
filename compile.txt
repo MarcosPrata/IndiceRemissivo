@@ -1,0 +1,14 @@
+Compilar e rodar com Hash ----------------------
+cd hash
+javac -d bin *.java
+cd bin
+java com.uece.hash.Main
+
+Compilar e rodar com Árvore Binária ------------
+cd hash
+javac -d bin *.java
+cd bin
+java com.uece.hash.Main
+
+amet id et sit in vitae 
+/home/marcosprata/Documentos/uece/ED1/book.txt
