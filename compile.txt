@@ -1,11 +1,19 @@
-Compilar e rodar com Hash ----------------------
+Estando dentro da pasta raiz:
+
+Compilar com Hash ----------------------
 cd hash
 javac -d bin *.java
+
+Compilar com Árvore Binária ------------
+cd binary
+javac -d bin *.java
+
+Rodar com Hash -------------------------
+cd hash
 cd bin
 java com.uece.hash.Main
 
-Compilar e rodar com Árvore Binária ------------
+Rodar com Árvore Binária ---------------
 cd binary
-javac -d bin *.java
 cd bin
 java com.uece.binary.Main
