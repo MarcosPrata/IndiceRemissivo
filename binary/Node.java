@@ -1,17 +1,15 @@
 package com.uece.binary;
 
 public class Node<E extends Comparable> {
-    E info;
-    Node left;
-    Node right;
+    private E info;
+    private Node left;
+    private Node right;
 
     public Node() {
     }
 
-    Node(E element) {
-        this.info = element;
-        right = null;
-        left = null;
+    public Node(E info) {
+        this.info = info;
     }
 
     public E getInfo() {

@@ -2,25 +2,25 @@ package com.uece.binary;
 
 import java.util.Objects;
 
-public class Word implements Comparable {
-    int line;
-    String value;
+public class Word implements Identifiable, Comparable {
+    private List<Integer> lines = new List<>();
+    private String value;
 
     public Word(String value) {
         this.value = value;
     }
 
     public Word(int line, String value) {
-        this.line = line;
+        this.lines.insert(line);
         this.value = value;
     }
 
-    public int getLine() {
-        return line;
+    public List<Integer> getLines() {
+        return lines;
     }
 
-    public void setLine(int line) {
-        this.line = line;
+    public void setLines(List<Integer> lines) {
+        this.lines = lines;
     }
 
     public String getValue() {
@@ -29,6 +29,16 @@ public class Word implements Comparable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public void insertLine(int i) {
+        lines.insert(i);
+    }
+
+    @Override
+    public int getLine() {
+        return lines.get(lines.size - 1);
     }
 
     @Override
@@ -41,13 +51,13 @@ public class Word implements Comparable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Word word = (Word) o;
-        return line == word.line && Objects.equals(value, word.value);
+        return lines == word.lines && Objects.equals(value, word.value);
     }
 
     @Override
     public String toString() {
         return "Word{" +
-                "line=" + line +
+                "line=" + lines.toString() +
                 ", value='" + value + '\'' +
                 '}';
     }

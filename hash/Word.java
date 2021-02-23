@@ -3,8 +3,8 @@ package com.uece.hash;
 import java.util.Objects;
 
 public class Word implements Identifiable, Comparable {
-    int line;
-    String value;
+    private int line;
+    private String value;
 
     public Word(String value) {
         this.value = value;

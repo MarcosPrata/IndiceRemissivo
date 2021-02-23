@@ -1,56 +1,105 @@
 package com.uece.binary;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
         List<String> keyWords = new List<>();
-        keyWords.insert("que");
-        keyWords.insert("com");
-        keyWords.insert("como");
+        List<Word> text = new List<>();
+        BinaryTree<Word> index = new BinaryTree<>();
 
-        List<Word> text = readText("book.txt", keyWords);
-        //text = text.sorted();
+        int function = 0;
+        while (function != 5) {
+            System.out.println("O que você deseja fazer?");
+            System.out.println("1 - Inserir palavras chave");
+            System.out.println("2 - Inserir texto");
+            System.out.println("3 - Exibir índice remissivo");
+            System.out.println("4 - Filtrar indice remissivo");
+            System.out.println("5 - Sair");
+            function = in.nextInt();
+            if ((function < 1) || (function > 5)) {
+                System.out.println("Valor incorreto!");
+            }
+            if (function == 1) {
+                System.out.println("Digite as palavras ch/home/marcosprata/Documentos/uece/ED1/book.txtaves: ");
+                Scanner in2 = new Scanner(System.in);
+                String keyWordsString = in2.nextLine();
+                System.out.println();
 
-        BinaryTree<Word> binaryTree = new BinaryTree<>();
+                keyWords = new List<>();
+                String[] words = keyWordsString.split(" ");
+                for (int i = 0; i < words.length; i++) {
+                    keyWords.insert(words[i]);
+                }
+            }
+            if (function == 2) {
+                text = readTextFile();
+            }
+            if (function == 3) {
+                for (int i = 0; i < text.size; i++) {
+                    Word word = text.get(i);
+                    boolean wordIsKeyWord = keyWords.indexOf(word.getValue()) != -1;
+                    if (wordIsKeyWord) index.insert(text.get(i));
+                }
+                printIndex(index);
+            }
+            if (function == 4) {
+                System.out.println("Digite as palavras que deseja buscar no indice: ");
+                Scanner in2 = new Scanner(System.in);
+                String keyWordsString = in2.nextLine();
+                System.out.println();
 
-        for (int i = 0; i < text.size; i++) {
-            binaryTree.insert(text.get(i));
+                List<String> filterKeyWords = new List<>();
+                String[] words = keyWordsString.split(" ");
+                for (int i = 0; i < words.length; i++) {
+                    filterKeyWords.insert(words[i]);
+                }
+
+                BinaryTree<Word> filteredIndex = new BinaryTree<>();
+                List<Word> indexElements = new List<>();
+                index.traverseInOrder(index.root, indexElements);
+                for (int i = indexElements.size - 1; i >= 0; i--) {
+                    if (filterKeyWords.indexOf(indexElements.get(i).getValue()) != -1) {
+                        filteredIndex.insert(indexElements.get(i));
+                    }
+                }
+                printIndex(filteredIndex);
+            }
         }
-
-        binaryTree.traverseInOrder(binaryTree.root);
-
-       // printRemissiveIndex(binaryTree);
-
     }
 
-    static void printRemissiveIndex(BinaryTree<Word> index) {
-//        //List<List<Word>> remissiveIndex = index.getAll();
-//
-//        for (int word = 0; word < remissiveIndex.size; word++) {
-//            System.out.print(remissiveIndex.get(word).get(0).value);
-//            System.out.print(" - ");
-//            for (int line = 0; line < remissiveIndex.get(word).size; line++) {
-//                System.out.print(remissiveIndex.get(word).get(line).line + " ");
-//            }
-//            System.out.println();
-//        }
+    static void printIndex(BinaryTree<Word> binaryIndex) {
+        System.out.println("Indice remissivo -------------------");
+        List<Word> wordList = new List<>();
+        binaryIndex.traverseInOrder(binaryIndex.root, wordList);
+        for (int word = wordList.size - 1; word >= 0; word--) {
+            System.out.print(wordList.get(word).getValue());
+            System.out.print(" - ");
+            for (int line = 0; line < wordList.get(word).getLines().size; line++) {
+                System.out.print(wordList.get(word).getLines().get(line) + " ");
+            }
+            System.out.println();
+        }
+        System.out.println("-----------------------------------\n");
     }
 
-    static List<Word> readText(String fileName, List<String> keyWords) {
+    static List<Word> readTextFile() {
         List<Word> text = new List<>();
         try {
-            var path = Paths.get("src/com/uece/hash/", fileName);
-            Scanner reader = new Scanner(path.toFile());
+            System.out.println("Digite o caminho do arquivo .txt: ");
+            Scanner sc1 = new Scanner(System.in);
+            File file = new File(sc1.next());
+            System.out.println();
+            Scanner reader = new Scanner(file);
             int lineCount = 1;
             while (reader.hasNextLine()) {
                 String line = reader.nextLine();
                 String[] words = line.split(" ");
                 for (int i = 0; i < words.length; i++) {
-                    boolean tem = keyWords.indexOf(words[i]) != -1;
-                    if (tem) text.insert(new Word(lineCount, words[i]));
+                    text.insert(new Word(lineCount, words[i]));
                 }
                 lineCount++;
             }

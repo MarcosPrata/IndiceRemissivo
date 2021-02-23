@@ -1,6 +1,6 @@
 package com.uece.binary;
 
-public class BinaryTree<E extends Comparable> {
+public class BinaryTree<E extends Identifiable & Comparable> {
     Node root;
 
     BinaryTree() {
@@ -18,27 +18,27 @@ public class BinaryTree<E extends Comparable> {
         root = deleteRecursive(root, value);
     }
 
-    public void traverseInOrder(Node node) {
+    public void traverseInOrder(Node node, List<E> list) {
         if (node != null) {
-            traverseInOrder(node.left);
-            System.out.print(" " + node.info.toString());
-            traverseInOrder(node.right);
+            traverseInOrder(node.getLeft(), list);
+            list.insert((E) node.getInfo());
+            traverseInOrder(node.getRight(), list);
         }
     }
 
-    public void traversePreOrder(Node node) {
+    public void traversePreOrder(Node node, List<E> list) {
         if (node != null) {
-            System.out.print(" " + node.info.toString());
-            traversePreOrder(node.left);
-            traversePreOrder(node.right);
+            list.insert((E) node.getInfo());
+            traversePreOrder(node.getLeft(), list);
+            traversePreOrder(node.getRight(), list);
         }
     }
 
-    public void traversePostOrder(Node node) {
+    public void traversePostOrder(Node node, List<E> list) {
         if (node != null) {
-            traversePostOrder(node.left);
-            traversePostOrder(node.right);
-            System.out.print(" " + node.info.toString());
+            traversePostOrder(node.getLeft(), list);
+            traversePostOrder(node.getRight(), list);
+            list.insert((E) node.getInfo());
         }
     }
 
@@ -50,12 +50,12 @@ public class BinaryTree<E extends Comparable> {
         if (current == null) {
             return new Node(value);
         }
-
-        if (((E) value).compareTo((E) current.info) < 0) {
-            current.left = addRecursive(current.left, value);
-        } else if (((E) value).compareTo((E) current.info) > 0) {
-            current.right = addRecursive(current.right, value);
+        if (((E) value).compareTo((E) current.getInfo()) < 0) {
+            current.setLeft(addRecursive(current.getLeft(), value));
+        } else if (((E) value).compareTo((E) current.getInfo()) > 0) {
+            current.setRight(addRecursive(current.getRight(), value));
         } else {
+            ((Identifiable) current.getInfo()).insertLine(value.getLine());
             return current;
         }
 
@@ -66,12 +66,12 @@ public class BinaryTree<E extends Comparable> {
         if (current == null) {
             return false;
         }
-        if (((E) value).equals((E) current.info)) {
+        if (((E) value).equals((E) current.getInfo())) {
             return true;
         }
-        return ((E) value).compareTo((E) current.info) < 0
-                ? containsNodeRecursive(current.left, value)
-                : containsNodeRecursive(current.right, value);
+        return ((E) value).compareTo((E) current.getInfo()) < 0
+                ? containsNodeRecursive(current.getLeft(), value)
+                : containsNodeRecursive(current.getRight(), value);
     }
 
     private Node deleteRecursive(Node current, E value) {
@@ -79,27 +79,27 @@ public class BinaryTree<E extends Comparable> {
             return null;
         }
 
-        if (((E) value).equals((E) current.info)) {
-            if (current.left == null && current.right == null) {
+        if (((E) value).equals((E) current.getInfo())) {
+            if (current.getLeft() == null && current.getRight() == null) {
                 return null;
             }
-            if (current.right == null) {
-                return current.left;
+            if (current.getRight() == null) {
+                return current.getLeft();
             }
 
-            if (current.left == null) {
-                return current.right;
+            if (current.getLeft() == null) {
+                return current.getRight();
             }
         }
-        if (((E) value).compareTo((E) current.info) < 0) {
-            current.left = deleteRecursive(current.left, value);
+        if (((E) value).compareTo((E) current.getInfo()) < 0) {
+            current.setLeft(deleteRecursive(current.getLeft(), value));
             return current;
         }
-        current.right = deleteRecursive(current.right, value);
+        current.setRight(deleteRecursive(current.getRight(), value));
         return current;
     }
 
     private E findSmallestValue(Node root) {
-        return root.left == null ? (E) root.info : findSmallestValue(root.left);
+        return root.getLeft() == null ? (E) root.getInfo() : findSmallestValue(root.getLeft());
     }
 }

@@ -2,50 +2,91 @@ package com.uece.hash;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        List<String> keyWords = new List<>();
-
-        System.out.println("Digite as key words: ");
         Scanner in = new Scanner(System.in);
-        String keyWordsString = in.nextLine();
-        System.out.println();
+        List<String> keyWords = new List<>();
+        List<Word> text = new List<>();
+        Hash<Word> index = new Hash<>();
 
-        String[] words = keyWordsString.split(" ");
-        for (int i = 0; i < words.length; i++) {
-            keyWords.insert(words[i]);
+        int function = 0;
+        while (function != 5) {
+            System.out.println("O que você deseja fazer?");
+            System.out.println("1 - Inserir palavras chave");
+            System.out.println("2 - Inserir texto");
+            System.out.println("3 - Exibir índice remissivo");
+            System.out.println("4 - Filtrar indice remissivo");
+            System.out.println("5 - Sair");
+            function = in.nextInt();
+            if ((function < 1) || (function > 5)) {
+                System.out.println("Valor incorreto!");
+            }
+            if (function == 1) {
+                System.out.println("Digite as palavras chaves: ");
+                Scanner in2 = new Scanner(System.in);
+                String keyWordsString = in2.nextLine();
+                System.out.println();
+
+                keyWords = new List<>();
+                String[] words = keyWordsString.split(" ");
+                for (int i = 0; i < words.length; i++) {
+                    keyWords.insert(words[i]);
+                }
+            }
+            if (function == 2) {
+                text = readTextFile();
+            }
+            if (function == 3) {
+                for (int i = 0; i < text.size; i++) {
+                    Word word = text.get(i);
+                    boolean wordIsKeyWord = keyWords.indexOf(word.getValue()) != -1;
+                    if (wordIsKeyWord) index.insert(text.get(i));
+                }
+                printIndex(index);
+            }
+            if (function == 4) {
+                System.out.println("Digite as palavras que deseja buscar no indice: ");
+                Scanner in2 = new Scanner(System.in);
+                String keyWordsString = in2.nextLine();
+                System.out.println();
+
+                List<String> filterKeyWords = new List<>();
+                String[] words = keyWordsString.split(" ");
+                for (int i = 0; i < words.length; i++) {
+                    filterKeyWords.insert(words[i]);
+                }
+
+                Hash<Word> filteredIndex = new Hash<>();
+                List<List<Word>> indexElements = index.getAll(SortDirection.ASC);
+                for (int i = 0; i < indexElements.size; i++) {
+                    if (filterKeyWords.indexOf(indexElements.get(i).get(0).getValue()) != -1) {
+                        for (int j = 0; j < indexElements.get(i).size; j++) {
+                            filteredIndex.insert(indexElements.get(i).get(j));
+                        }
+                    }
+                }
+                printIndex(filteredIndex);
+            }
         }
-
-        List<Word> text = readTextFileKeyWords("book.txt", keyWords);
-
-        Hash<Word> hash = new Hash<>();
-
-        for (int i = 0; i < text.size; i++) {
-            hash.insert(text.get(i));
-        }
-
-        printIndex(hash);
-
     }
 
     static void printIndex(Hash<Word> hash) {
         System.out.println("Indice remissivo -------------------");
         List<List<Word>> index = hash.getAll(SortDirection.ASC);
-
         for (int word = 0; word < index.size; word++) {
-            System.out.print(index.get(word).get(0).value);
+            System.out.print(index.get(word).get(0).getValue());
             System.out.print(" - ");
             for (int line = 0; line < index.get(word).size; line++) {
-                System.out.print(index.get(word).get(line).line + " ");
+                System.out.print(index.get(word).get(line).getLine() + " ");
             }
             System.out.println();
         }
+        System.out.println("-----------------------------------\n");
     }
 
-    static List<Word> readTextFileKeyWords(String fileName, List<String> keyWords) {
+    static List<Word> readTextFile() {
         List<Word> text = new List<>();
         try {
             System.out.println("Digite o caminho do arquivo .txt: ");
@@ -58,8 +99,7 @@ public class Main {
                 String line = reader.nextLine();
                 String[] words = line.split(" ");
                 for (int i = 0; i < words.length; i++) {
-                    boolean wordIsKeyWord = keyWords.indexOf(words[i]) != -1;
-                    if (wordIsKeyWord) text.insert(new Word(lineCount, words[i]));
+                    text.insert(new Word(lineCount, words[i]));
                 }
                 lineCount++;
             }
